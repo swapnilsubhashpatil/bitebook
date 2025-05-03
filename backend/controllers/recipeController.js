@@ -3,7 +3,17 @@ import Comment from "../models/Comment.js";
 import User from "../models/User.js";
 
 export const createRecipe = async (req, res) => {
-  const { title, ingredients, instructions, image, tags } = req.body;
+  const {
+    title,
+    ingredients,
+    instructions,
+    image,
+    tags,
+    prepTime,
+    cookTime,
+    servings,
+    difficulty,
+  } = req.body;
 
   try {
     if (!title || !ingredients || !instructions) {
@@ -18,6 +28,10 @@ export const createRecipe = async (req, res) => {
       instructions,
       image,
       tags,
+      prepTime,
+      cookTime,
+      servings,
+      difficulty,
       createdBy: req.user._id,
       isPublic: true,
     });
@@ -36,7 +50,17 @@ export const createRecipe = async (req, res) => {
 };
 
 export const editRecipe = async (req, res) => {
-  const { title, ingredients, instructions, image, tags } = req.body;
+  const {
+    title,
+    ingredients,
+    instructions,
+    image,
+    tags,
+    prepTime,
+    cookTime,
+    servings,
+    difficulty,
+  } = req.body;
 
   try {
     const recipe = await Recipe.findById(req.params.id);
@@ -55,6 +79,10 @@ export const editRecipe = async (req, res) => {
     recipe.instructions = instructions || recipe.instructions;
     recipe.image = image !== undefined ? image : recipe.image;
     recipe.tags = tags || recipe.tags;
+    recipe.prepTime = prepTime !== undefined ? prepTime : recipe.prepTime;
+    recipe.cookTime = cookTime !== undefined ? cookTime : recipe.cookTime;
+    recipe.servings = servings !== undefined ? servings : recipe.servings;
+    recipe.difficulty = difficulty || recipe.difficulty;
 
     await recipe.save();
     res.json(recipe);
@@ -122,27 +150,64 @@ export const toggleRecipeVisibility = async (req, res) => {
 };
 
 export const getRecipes = async (req, res) => {
-  const { search } = req.query;
+  const {
+    search,
+    tags,
+    difficulty,
+    prepTime,
+    servings,
+    userRecipes,
+    isPublic,
+  } = req.query;
   try {
-    const query = search
-      ? {
-          $and: [
-            { isPublic: true },
-            {
-              $or: [
-                { title: { $regex: search, $options: "i" } },
-                { ingredients: { $regex: search, $options: "i" } },
-                { tags: { $regex: search, $options: "i" } },
-              ],
-            },
-          ],
-        }
-      : { isPublic: true };
-    const recipes = await Recipe.find(query)
-      .populate("createdBy", "username")
-      .populate("comments");
+    let query = {};
+
+    if (userRecipes === "true" && req.user) {
+      query.createdBy = req.user._id;
+    } else if (isPublic === "true") {
+      query.isPublic = true;
+    }
+
+    if (search) {
+      const escapedSearch = search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      query.$or = [
+        { title: { $regex: `^${escapedSearch}`, $options: "i" } },
+        { ingredients: { $regex: `^${escapedSearch}`, $options: "i" } },
+        { tags: { $regex: `^${escapedSearch}`, $options: "i" } },
+      ];
+    }
+
+    if (tags) {
+      const tagArray = tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter(Boolean);
+      query.tags = { $all: tagArray };
+    }
+
+    if (difficulty) {
+      query.difficulty = difficulty;
+    }
+
+    if (prepTime) {
+      query.prepTime = { $lte: parseInt(prepTime) };
+    }
+
+    if (servings) {
+      query.servings = parseInt(servings);
+    }
+
+    const recipes = await Recipe.find(query).populate(
+      "createdBy",
+      "username _id"
+    );
     res.json(recipes);
   } catch (error) {
+    console.error("Get recipes error:", {
+      message: error.message,
+      stack: error.stack,
+      query: req.query,
+    });
     res.status(400).json({ message: error.message });
   }
 };
@@ -150,10 +215,10 @@ export const getRecipes = async (req, res) => {
 export const getRecipe = async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id)
-      .populate("createdBy", "username")
+      .populate("createdBy", "username _id")
       .populate({
         path: "comments",
-        populate: { path: "userId", select: "username" },
+        populate: { path: "userId", select: "username _id" },
       });
     if (!recipe) {
       return res.status(404).json({ message: "Recipe not found" });
@@ -166,30 +231,10 @@ export const getRecipe = async (req, res) => {
     }
     res.json(recipe);
   } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-};
-
-export const rateRecipe = async (req, res) => {
-  const { rating } = req.body;
-  try {
-    const recipe = await Recipe.findById(req.params.id);
-    if (!recipe) {
-      return res.status(404).json({ message: "Recipe not found" });
-    }
-
-    const existingRating = recipe.ratings.find(
-      (r) => r.userId.toString() === req.user._id.toString()
-    );
-    if (existingRating) {
-      existingRating.rating = rating;
-    } else {
-      recipe.ratings.push({ userId: req.user._id, rating });
-    }
-
-    await recipe.save();
-    res.json({ message: "Rating updated" });
-  } catch (error) {
+    console.error("Get recipe error:", {
+      message: error.message,
+      stack: error.stack,
+    });
     res.status(400).json({ message: error.message });
   }
 };
@@ -213,10 +258,49 @@ export const postComment = async (req, res) => {
 
     const populatedComment = await Comment.findById(comment._id).populate(
       "userId",
-      "username"
+      "username _id"
     );
     res.status(201).json(populatedComment);
   } catch (error) {
+    console.error("Post comment error:", {
+      message: error.message,
+      stack: error.stack,
+    });
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const deleteComment = async (req, res) => {
+  const { commentId } = req.params;
+  try {
+    const comment = await Comment.findById(commentId);
+    if (!comment) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+
+    if (comment.userId.toString() !== req.user._id.toString()) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this comment" });
+    }
+
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) {
+      return res.status(404).json({ message: "Recipe not found" });
+    }
+
+    recipe.comments = recipe.comments.filter(
+      (id) => id.toString() !== commentId
+    );
+    await recipe.save();
+    await Comment.deleteOne({ _id: commentId });
+
+    res.json({ message: "Comment deleted" });
+  } catch (error) {
+    console.error("Delete comment error:", {
+      message: error.message,
+      stack: error.stack,
+    });
     res.status(400).json({ message: error.message });
   }
 };
@@ -236,6 +320,10 @@ export const saveRecipe = async (req, res) => {
 
     res.json({ message: "Recipe saved" });
   } catch (error) {
+    console.error("Save recipe error:", {
+      message: error.message,
+      stack: error.stack,
+    });
     res.status(400).json({ message: error.message });
   }
 };
@@ -255,6 +343,10 @@ export const removeSavedRecipe = async (req, res) => {
 
     res.json({ message: "Recipe removed from saved" });
   } catch (error) {
+    console.error("Remove saved recipe error:", {
+      message: error.message,
+      stack: error.stack,
+    });
     res.status(400).json({ message: error.message });
   }
 };
@@ -263,10 +355,14 @@ export const getSavedRecipes = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).populate({
       path: "savedRecipes",
-      populate: { path: "createdBy", select: "username" },
+      populate: { path: "createdBy", select: "username _id" },
     });
     res.json(user.savedRecipes);
   } catch (error) {
+    console.error("Get saved recipes error:", {
+      message: error.message,
+      stack: error.stack,
+    });
     res.status(400).json({ message: error.message });
   }
 };

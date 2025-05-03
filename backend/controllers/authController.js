@@ -9,7 +9,6 @@ export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    // Validate input
     if (!username || !email || !password) {
       return res
         .status(400)
@@ -31,7 +30,6 @@ export const registerUser = async (req, res) => {
         .json({ message: "Password must be at least 6 characters" });
     }
 
-    // Check for existing user
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res
@@ -44,7 +42,6 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Username is already taken" });
     }
 
-    // Create user
     const user = await User.create({ username, email, password });
     const token = generateToken(user._id);
 
@@ -97,6 +94,63 @@ export const loginUser = async (req, res) => {
       body: req.body,
     });
     res.status(400).json({ message: error.message || "Login failed" });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  const { username, email, password } = req.body;
+
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (username) {
+      if (username.length < 3) {
+        return res
+          .status(400)
+          .json({ message: "Username must be at least 3 characters" });
+      }
+      const usernameExists = await User.findOne({
+        username,
+        _id: { $ne: user._id },
+      });
+      if (usernameExists) {
+        return res.status(400).json({ message: "Username is already taken" });
+      }
+      user.username = username;
+    }
+
+    if (email) {
+      if (!/^\S+@\S+\.\S+$/.test(email)) {
+        return res.status(400).json({ message: "Invalid email format" });
+      }
+      const emailExists = await User.findOne({ email, _id: { $ne: user._id } });
+      if (emailExists) {
+        return res.status(400).json({ message: "Email is already taken" });
+      }
+      user.email = email;
+    }
+
+    if (password) {
+      if (password.length < 6) {
+        return res
+          .status(400)
+          .json({ message: "Password must be at least 6 characters" });
+      }
+      user.password = password;
+    }
+
+    await user.save();
+    res.json({ _id: user._id, username: user.username, email: user.email });
+  } catch (error) {
+    console.error("Update user error:", {
+      message: error.message,
+      stack: error.stack,
+      body: req.body,
+    });
+    res.status(400).json({ message: error.message || "Failed to update user" });
   }
 };
 

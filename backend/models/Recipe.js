@@ -7,16 +7,10 @@ const recipeSchema = new mongoose.Schema({
   image: { type: String },
   tags: [{ type: String }],
   isPublic: { type: Boolean, default: true },
-  ratings: [
-    {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      },
-      rating: { type: Number, required: true, min: 1, max: 5 },
-    },
-  ],
+  prepTime: { type: Number },
+  cookTime: { type: Number },
+  servings: { type: Number },
+  difficulty: { type: String, enum: ["easy", "medium", "hard"] },
   comments: [{ type: mongoose.Schema.Types.ObjectId, ref: "Comment" }],
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,

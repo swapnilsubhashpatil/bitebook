@@ -6,8 +6,8 @@ import {
   toggleRecipeVisibility,
   getRecipes,
   getRecipe,
-  rateRecipe,
   postComment,
+  deleteComment,
   saveRecipe,
   removeSavedRecipe,
   getSavedRecipes,
@@ -22,8 +22,8 @@ router.delete("/:id", protect, deleteRecipe);
 router.patch("/:id/visibility", protect, toggleRecipeVisibility);
 router.get("/", getRecipes);
 router.get("/:id", getRecipe);
-router.post("/:id/rate", protect, rateRecipe);
 router.post("/:id/comments", protect, postComment);
+router.delete("/:id/comments/:commentId", protect, deleteComment);
 router.post("/:id/save", protect, saveRecipe);
 router.delete("/:id/save", protect, removeSavedRecipe);
 router.get("/users/saved", protect, getSavedRecipes);

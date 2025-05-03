@@ -32,6 +32,13 @@ export const postComment = async (id, comment) => {
   return response.data;
 };
 
+export const deleteComment = async (recipeId, commentId) => {
+  const response = await api.delete(
+    `/recipes/${recipeId}/comments/${commentId}`
+  );
+  return response.data;
+};
+
 export const saveRecipe = async (id) => {
   const response = await api.post(`/recipes/${id}/save`);
   return response.data;
@@ -113,6 +120,28 @@ export const toggleRecipeVisibility = async (id) => {
   }
 };
 
+export const updateUser = async (userData) => {
+  console.log("Update user request payload:", userData);
+  try {
+    const response = await api.put("/auth/me", userData);
+    return response.data;
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message || error.message || "Unknown error";
+    console.error("Update user error:", {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: errorMessage,
+    });
+    throw new Error(errorMessage);
+  }
+};
+
+export const getUser = async () => {
+  const response = await api.get("/auth/me");
+  return response.data;
+};
+
 export const login = async (credentials) => {
   console.log("Login request payload:", credentials);
   const response = await api.post("/auth/login", credentials);
@@ -136,9 +165,4 @@ export const register = async (userData) => {
     });
     throw new Error(errorMessage);
   }
-};
-
-export const getUser = async () => {
-  const response = await api.get("/auth/me");
-  return response.data;
 };

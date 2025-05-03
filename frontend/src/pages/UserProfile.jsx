@@ -11,6 +11,7 @@ import { AuthContext } from "../context/AuthContext.jsx";
 import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import RecipeCard from "../components/RecipeCard.jsx";
+import { FaLock, FaUnlock } from "react-icons/fa";
 
 function UserProfile() {
   const { user } = useContext(AuthContext);
@@ -72,26 +73,29 @@ function UserProfile() {
     );
   }
 
-  if (savedLoading || myRecipesLoading) return <p>Loading...</p>;
+  if (savedLoading || myRecipesLoading)
+    return <p className="text-gray-600 text-center">Loading...</p>;
 
   return (
-    <div>
+    <div className="container mx-auto px-4 py-6">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">My Profile</h1>
       <div className="flex space-x-4 mb-6">
         <button
           onClick={() => setActiveTab("saved")}
-          className={`px-4 py-2 rounded-lg ${
-            activeTab === "saved" ? "bg-orange-500 text-white" : "bg-gray-200"
+          className={`px-4 py-2 rounded-lg font-semibold ${
+            activeTab === "saved"
+              ? "bg-orange-500 text-white"
+              : "bg-gray-200 text-gray-700"
           }`}
         >
           Saved Recipes
         </button>
         <button
           onClick={() => setActiveTab("myRecipes")}
-          className={`px-4 py-2 rounded-lg ${
+          className={`px-4 py-2 rounded-lg font-semibold ${
             activeTab === "myRecipes"
               ? "bg-orange-500 text-white"
-              : "bg-gray-200"
+              : "bg-gray-200 text-gray-700"
           }`}
         >
           My Recipes
@@ -110,14 +114,14 @@ function UserProfile() {
                   <RecipeCard recipe={recipe} />
                   <button
                     onClick={() => removeSavedMutation.mutate(recipe._id)}
-                    className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                    className="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600 transition-colors duration-300"
                   >
                     Remove
                   </button>
                 </div>
               ))
             ) : (
-              <p className="text-gray-600">No saved recipes yet.</p>
+              <p className="text-gray-600 text-center">No saved recipes yet.</p>
             )}
           </div>
         </div>
@@ -140,12 +144,12 @@ function UserProfile() {
                     >
                       {recipe.isPublic ? "Make Private" : "Make Public"}
                     </button>
-                    <Link
+                    {/* <Link
                       to={`/edit-recipe/${recipe._id}`}
                       className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
                     >
                       Edit
-                    </Link>
+                    </Link> */}
                     <button
                       onClick={() => deleteMutation.mutate(recipe._id)}
                       className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"

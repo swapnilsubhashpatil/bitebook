@@ -18,11 +18,9 @@ function AddRecipe() {
     mutationFn: addRecipe,
     onSuccess: () => {
       toast.success("Recipe added successfully!");
-      navigate("/");
+      navigate("/profile");
     },
-    onError: (error) => {
-      toast.error(error.message);
-    },
+    onError: (error) => toast.error(error.message),
   });
 
   if (!user) {
@@ -46,18 +44,25 @@ function AddRecipe() {
         .map((item) => item.trim())
         .filter((item) => item),
       tags: data.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
+        ? data.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag)
+        : [],
+      prepTime: data.prepTime ? parseInt(data.prepTime) : undefined,
+      cookTime: data.cookTime ? parseInt(data.cookTime) : undefined,
+      servings: data.servings ? parseInt(data.servings) : undefined,
     });
   };
 
   return (
-    <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Add New Recipe</h2>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Title</label>
+    <div className="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-md">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Add New Recipe</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Title *
+          </label>
           <input
             type="text"
             {...register("title", { required: "Title is required" })}
@@ -67,9 +72,9 @@ function AddRecipe() {
             <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
           )}
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">
-            Ingredients (one per line)
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Ingredients (one per line) *
           </label>
           <textarea
             {...register("ingredients", {
@@ -85,8 +90,10 @@ function AddRecipe() {
             </p>
           )}
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">Instructions</label>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Instructions *
+          </label>
           <textarea
             {...register("instructions", {
               required: "Instructions are required",
@@ -100,9 +107,9 @@ function AddRecipe() {
             </p>
           )}
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">
-            Image URL (optional)
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Image URL
           </label>
           <input
             type="text"
@@ -110,9 +117,9 @@ function AddRecipe() {
             className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-2">
-            Tags (comma-separated, optional)
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Tags (comma-separated)
           </label>
           <input
             type="text"
@@ -121,9 +128,52 @@ function AddRecipe() {
             placeholder="e.g., vegetarian, quick, dinner"
           />
         </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Prep Time (minutes)
+          </label>
+          <input
+            type="number"
+            {...register("prepTime")}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Cook Time (minutes)
+          </label>
+          <input
+            type="number"
+            {...register("cookTime")}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Servings
+          </label>
+          <input
+            type="number"
+            {...register("servings")}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Difficulty
+          </label>
+          <select
+            {...register("difficulty")}
+            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          >
+            <option value="easy">Easy</option>
+            <option value="medium">Medium</option>
+            <option value="hard">Hard</option>
+          </select>
+        </div>
         <button
           type="submit"
-          className="w-full bg-orange-500 text-white p-3 rounded-lg hover:bg-orange-600"
+          className="w-full bg-orange-500 text-white p-3 rounded-lg hover:bg-orange-600 transition-colors duration-300"
         >
           Add Recipe
         </button>
