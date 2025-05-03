@@ -37,18 +37,26 @@ function AddRecipe() {
 
   const onSubmit = (data) => {
     console.log("Add recipe form data:", data);
+    // Process tags from input
+    const additionalTags = data.tags
+      ? data.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter((tag) => tag)
+      : [];
+    // Include "vegetarian" tag only if selected
+    const tags =
+      data.isVegetarian === "vegetarian"
+        ? ["vegetarian", ...additionalTags]
+        : additionalTags;
+
     mutation.mutate({
       ...data,
       ingredients: data.ingredients
         .split("\n")
         .map((item) => item.trim())
         .filter((item) => item),
-      tags: data.tags
-        ? data.tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter((tag) => tag)
-        : [],
+      tags,
       prepTime: data.prepTime ? parseInt(data.prepTime) : undefined,
       cookTime: data.cookTime ? parseInt(data.cookTime) : undefined,
       servings: data.servings ? parseInt(data.servings) : undefined,
@@ -119,13 +127,48 @@ function AddRecipe() {
         </div>
         <div>
           <label className="block text-gray-700 font-medium mb-2">
-            Tags (comma-separated)
+            Recipe Type *
+          </label>
+          <div className="flex space-x-4">
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                value="vegetarian"
+                {...register("isVegetarian", {
+                  required: "Please select a recipe type",
+                })}
+                className="form-radio h-5 w-5 text-orange-500"
+                defaultChecked
+              />
+              <span className="ml-2 text-gray-700">Vegetarian</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input
+                type="radio"
+                value="non-vegetarian"
+                {...register("isVegetarian", {
+                  required: "Please select a recipe type",
+                })}
+                className="form-radio h-5 w-5 text-orange-500"
+              />
+              <span className="ml-2 text-gray-700">Non-Vegetarian</span>
+            </label>
+          </div>
+          {errors.isVegetarian && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.isVegetarian.message}
+            </p>
+          )}
+        </div>
+        <div>
+          <label className="block text-gray-700 font-medium mb-2">
+            Additional Tags (comma-separated)
           </label>
           <input
             type="text"
             {...register("tags")}
             className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
-            placeholder="e.g., vegetarian, quick, dinner"
+            placeholder="e.g., quick, dinner"
           />
         </div>
         <div>

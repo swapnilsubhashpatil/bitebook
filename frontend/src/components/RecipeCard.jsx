@@ -9,7 +9,7 @@ function RecipeCard({ recipe }) {
     >
       <Link to={`/recipe/${recipe._id}`}>
         <img
-          src={recipe.image || "https://via.placeholder.com/300"}
+          src={recipe.image || "https://placehold.co/300x200?text=Recipe+Image"}
           alt={recipe.title}
           className="w-full h-48 object-cover"
         />

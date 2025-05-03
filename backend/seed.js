@@ -6,7 +6,7 @@ import { connectDB } from "./config/db.js";
 
 dotenv.config();
 
-// 25 unique recipes with valid image links
+// 25 unique recipes with valid image links and vegetarian tags
 const sampleRecipes = [
   {
     title: "Classic Pancakes",
@@ -23,7 +23,7 @@ const sampleRecipes = [
       "1. In a large bowl, whisk together flour, sugar, baking powder, and salt.\n2. In another bowl, beat the egg and mix in milk and melted butter.\n3. Combine wet and dry ingredients, stirring until just blended.\n4. Heat a non-stick skillet over medium heat and pour 1/4 cup batter for each pancake.\n5. Cook until bubbles form, flip, and cook until golden.",
     image:
       "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["breakfast", "easy", "pancakes"],
+    tags: ["breakfast", "easy", "pancakes", "vegetarian"],
     isPublic: true,
     prepTime: 10,
     cookTime: 15,
@@ -71,7 +71,7 @@ const sampleRecipes = [
       "1. Preheat oven to 375°F (190°C).\n2. Combine flour, baking soda and salt in small bowl.\n3. Beat butter, sugars and vanilla in large mixer bowl until creamy.\n4. Add eggs one at a time, beating well after each addition.\n5. Gradually beat in flour mixture.\n6. Stir in chocolate chips.\n7. Drop by rounded tablespoon onto ungreased baking sheets.\n8. Bake for 9 to 11 minutes or until golden brown.",
     image:
       "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["dessert", "baking", "cookies"],
+    tags: ["dessert", "baking", "cookies", "vegetarian"],
     isPublic: true,
     prepTime: 20,
     cookTime: 10,
@@ -144,7 +144,7 @@ const sampleRecipes = [
       "1. Toast bread until golden and crisp.\n2. Mash avocado with lemon juice, salt and pepper.\n3. Spread avocado mixture on toast.\n4. Top with red pepper flakes and microgreens.\n5. Optional: Top with a poached or fried egg.",
     image:
       "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["breakfast", "vegan", "quick"],
+    tags: ["breakfast", "vegan", "quick", "vegetarian"],
     isPublic: true,
     prepTime: 5,
     cookTime: 5,
@@ -191,7 +191,7 @@ const sampleRecipes = [
       "1. In a glass, layer half the yogurt.\n2. Add half the granola and half the berries.\n3. Repeat layers.\n4. Drizzle with honey and sprinkle chia seeds on top.",
     image:
       "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["breakfast", "healthy", "snack"],
+    tags: ["breakfast", "healthy", "snack", "vegetarian"],
     isPublic: true,
     prepTime: 5,
     cookTime: 0,
@@ -233,7 +233,7 @@ const sampleRecipes = [
       "1. Place all ingredients in a blender.\n2. Blend until smooth.\n3. Pour into a glass and serve immediately.",
     image:
       "https://images.unsplash.com/photo-1505576399279-565b52d4ac71?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["breakfast", "drink", "healthy"],
+    tags: ["breakfast", "drink", "healthy", "vegetarian"],
     isPublic: true,
     prepTime: 5,
     cookTime: 0,
@@ -252,7 +252,7 @@ const sampleRecipes = [
       "1. Beat eggs with salt and pepper.\n2. Melt butter in a nonstick skillet over medium-low heat.\n3. Pour in eggs and stir gently with a rubber spatula.\n4. When eggs begin to set, stop stirring and let cook undisturbed.\n5. Fold omelette in half and slide onto plate.\n6. Garnish with chives.",
     image:
       "https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["breakfast", "eggs", "quick"],
+    tags: ["breakfast", "eggs", "quick", "vegetarian"],
     isPublic: true,
     prepTime: 5,
     cookTime: 5,
@@ -297,7 +297,7 @@ const sampleRecipes = [
       "1. Whisk together eggs, milk, vanilla and cinnamon.\n2. Soak bread slices in mixture for 30 seconds per side.\n3. Melt butter in a skillet over medium heat.\n4. Cook bread until golden brown, about 3 minutes per side.\n5. Serve warm with maple syrup.",
     image:
       "https://images.unsplash.com/photo-1484723091739-30a097e8f929?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["breakfast", "sweet", "brunch"],
+    tags: ["breakfast", "sweet", "brunch", "vegetarian"],
     isPublic: true,
     prepTime: 10,
     cookTime: 10,
@@ -367,7 +367,7 @@ const sampleRecipes = [
       "1. Preheat oven to 350°F (175°C).\n2. Mix bananas, butter, sugar, egg and vanilla.\n3. Add baking soda, flour and salt, stir to combine.\n4. Pour into a greased loaf pan.\n5. Bake for 50-60 minutes until a toothpick comes out clean.",
     image:
       "https://images.pexels.com/photos/1277202/pexels-photo-1277202.jpeg?auto=compress&cs=tinysrgb&w=600",
-    tags: ["baking", "breakfast", "dessert"],
+    tags: ["baking", "breakfast", "dessert", "vegetarian"],
     isPublic: true,
     prepTime: 10,
     cookTime: 55,
@@ -390,7 +390,7 @@ const sampleRecipes = [
       "1. In a large bowl, combine lettuce, croutons and Parmesan.\n2. Whisk together dressing, anchovy, garlic and lemon juice.\n3. Toss salad with dressing.\n4. Season with salt and pepper.",
     image:
       "https://images.unsplash.com/photo-1546793665-c74683f339c1?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["salad", "lunch", "vegetarian"],
+    tags: ["salad", "lunch"],
     isPublic: true,
     prepTime: 10,
     cookTime: 0,
@@ -458,7 +458,7 @@ const sampleRecipes = [
       "1. Combine all ingredients in a blender.\n2. Blend until smooth.\n3. Serve chilled, garnished with a pinch of cardamom.",
     image:
       "https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["drink", "indian", "refreshing"],
+    tags: ["drink", "indian", "refreshing", "vegetarian"],
     isPublic: true,
     prepTime: 5,
     cookTime: 0,
@@ -524,7 +524,7 @@ const sampleRecipes = [
       "1. Melt chocolate and let cool slightly.\n2. Whisk egg yolks into chocolate.\n3. Beat egg whites with sugar until stiff peaks form.\n4. Whip cream with vanilla until soft peaks.\n5. Fold egg whites and whipped cream into chocolate mixture.\n6. Chill for at least 2 hours before serving.",
     image:
       "https://images.unsplash.com/photo-1563805042-7684c019e1cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["dessert", "chocolate", "french"],
+    tags: ["dessert", "chocolate", "french", "vegetarian"],
     isPublic: true,
     prepTime: 20,
     cookTime: 0,
@@ -546,7 +546,7 @@ const sampleRecipes = [
       "1. Heat vegetable oil in a wok or large skillet.\n2. Scramble eggs and remove from pan.\n3. Add vegetables and stir-fry for 2 minutes.\n4. Add rice and stir-fry for 3 minutes.\n5. Stir in eggs, soy sauce and sesame oil.\n6. Garnish with green onions.",
     image:
       "https://images.unsplash.com/photo-1603133872878-684f208fb84b?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["asian", "quick", "dinner"],
+    tags: ["asian", "quick", "dinner", "vegetarian"],
     isPublic: true,
     prepTime: 10,
     cookTime: 10,
@@ -570,7 +570,7 @@ const sampleRecipes = [
       "1. Preheat oven to 375°F (190°C).\n2. Mix dry ingredients in one bowl.\n3. Mix wet ingredients in another bowl.\n4. Combine wet and dry ingredients, fold in blueberries.\n5. Divide batter into muffin tin.\n6. Bake for 20-25 minutes until golden.",
     image:
       "https://images.unsplash.com/photo-1550583724-b2692b85b150?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80",
-    tags: ["breakfast", "baking", "snack"],
+    tags: ["breakfast", "baking", "snack", "vegetarian"],
     isPublic: true,
     prepTime: 15,
     cookTime: 25,

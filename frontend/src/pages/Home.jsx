@@ -14,9 +14,16 @@ function Home() {
     queryFn: () => {
       const filterParams = {
         isPublic: true,
-        tags: isVegOnly ? "vegetarian" : "",
+        tags: isVegOnly ? ["vegetarian"] : [], // Use array for explicit tag filtering
       };
       return getRecipes(search, filterParams);
+    },
+    select: (data) => {
+      // Client-side filtering to ensure only vegetarian recipes are shown when isVegOnly is true
+      if (isVegOnly) {
+        return data.filter((recipe) => recipe.tags?.includes("vegetarian"));
+      }
+      return data;
     },
   });
 
