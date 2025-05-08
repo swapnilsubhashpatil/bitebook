@@ -21,6 +21,10 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/recipes", recipeRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Recipe API is running!");
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
