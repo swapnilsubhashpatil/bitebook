@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://bitebook-6n9h.onrender.com/api",
+  baseURL: "https://bitebook-825953726751.us-central1.run.app",
 });
 
 api.interceptors.request.use((config) => {
